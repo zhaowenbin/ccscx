@@ -1,0 +1,49 @@
+{"total":7,"rows":[
+	{"name":"代收时间起","value":"","group":"代收信息","editor":"datetimebox"},
+	{"name":"代收时间止","value":"","group":"代收信息","editor":"datetimebox"},
+	{"name":"归属地市","value":"","group":"代收信息","editor":{
+		"type":"combobox",
+		"options":{
+			"valueField":"id",
+			"textField":"text",
+			"url":"data/city.json"
+		}
+	}},
+	{"name":"归属区县","value":"","group":"代收信息","editor":{
+		"type":"combobox",
+		"options":{
+			"valueField":"id",
+			"textField":"text",
+			"url":"data/city.json"
+		}
+	}},
+	{"name":"代收机构","value":"","group":"代收信息","editor":{
+		"type":"combobox",
+		"options":{
+			"valueField":"id",
+			"textField":"text",
+			"url":"data/bxgs.json"
+		}
+	}},
+	{"name":"纳税类型","value":"","group":"代收信息","editor":{
+		"type":"combobox",
+		"options":{
+			"valueField":"id",
+			"textField":"text",
+			"url":"data/nslx.json"
+		}
+	}},
+	
+	{"name":"排量（单位：升）","value":"","group":"车辆信息","editor":{
+		"type":"combobox",
+		"options":{
+			"valueField":"id",
+			"textField":"text",
+			"url":"data/pl.json"
+		}
+	}},
+	{"name":"号牌号码","value":"","group":"车辆信息","editor":"textbox"},
+	{"name":"车主姓名","value":"","group":"车辆信息","editor":"textbox"},
+	{"name":"<font color='red'><b>保单总计</b></font>","value":"","group":"合计信息","editor":"textbox"},
+	{"name":"<font color='red'><b>税款总计</b></font>","value":"","group":"合计信息","editor":"textbox"}
+]}

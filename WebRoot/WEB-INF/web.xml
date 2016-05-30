@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+  <description>车船税数据展示平台</description>
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+
+  <servlet>
+    <servlet-name>loginServlet</servlet-name>
+    <servlet-class>com.derun.controller.login.web.LoginServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>loginServlet</servlet-name>
+    <url-pattern>/loginServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>busiQueryServlet</servlet-name>
+    <servlet-class>com.derun.controller.busiQuery.web.BusiQueryServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>busiQueryServlet</servlet-name>
+    <url-pattern>/busiQueryServlet</url-pattern>
+  </servlet-mapping>
+    <servlet>
+    <servlet-name>chartServlet</servlet-name>
+    <servlet-class>com.derun.controller.chart.web.ChartServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>chartServlet</servlet-name>
+    <url-pattern>/chartServlet</url-pattern>
+  </servlet-mapping>
+  <listener>
+    <listener-class>com.derun.common.init.CfgLoader</listener-class>
+  </listener>
+</web-app>
