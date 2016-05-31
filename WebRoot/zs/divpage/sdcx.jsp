@@ -84,6 +84,21 @@ $(function () {
         subtitle: {
             text: ''
         },
+        /*
+        */
+        tooltip:{
+        	shared: true,
+        	useHTML: true,
+        	formatter: function () {
+        		var s = '<b>'+this.x+'</b>';
+        		$.each(this.points, function () {
+                    s += '<br/>' + this.series.name + ': ' +
+                        this.y +', &nbsp;占比：'+Highcharts.numberFormat(this.y*100/this.series.points[10].y, 2) +'% ';
+                });
+                return s;
+        	}
+        },
+        
 		xAxis: {
             categories: ['西安', '铜川', '宝鸡', '咸阳', '渭南', '延安',
                 '汉中', '榆林', '安康', '商洛', '合计']

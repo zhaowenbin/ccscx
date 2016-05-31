@@ -5,14 +5,14 @@
 	</DRIVERS>
 	<DBPOOL>
 		<NAME>readPool</NAME>
+		<!-- 
 		<URL>jdbc:oracle:thin:@192.168.109.129:1521:orcl</URL> 
 		<USER>tpl2</USER>
 		<PASSWORD>tpl2</PASSWORD>
-		<!-- 
+		 -->
 		<URL>jdbc:oracle:thin:@156.16.42.162:1521:ccssyjk</URL> 
 		<USER>tpl</USER>
 		<PASSWORD>tpl</PASSWORD>
-		 -->
 		<MINCONN>10</MINCONN>
 		<!-- 最小连接数 -->
 		<MAXCONN>150</MAXCONN>

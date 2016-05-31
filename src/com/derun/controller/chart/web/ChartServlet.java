@@ -364,7 +364,11 @@ public class ChartServlet extends HttpServlet {
 				+ "round(SUM(CASE WHEN taxconditioncode = 'C' THEN annualtaxamount-sumtax ELSE 0 END)/sum(sumtax),2) jszb, "
 				+ "round(SUM(CASE WHEN taxconditioncode = 'E' THEN annualtaxamount-sumtax ELSE 0 END)/10000,2) msje, "
 				+ "round(count(CASE WHEN taxconditioncode = 'E' THEN taxconfirmno  ELSE null END)/10000,2) msbd, "
-				+ "round(SUM(CASE WHEN taxconditioncode = 'E' THEN annualtaxamount-sumtax ELSE 0 END)/sum(sumtax),2) mszb "
+				+ "round(SUM(CASE WHEN taxconditioncode = 'E' THEN annualtaxamount-sumtax ELSE 0 END)/sum(sumtax),2) mszb, "
+				
+				+ "count(case when taxconditioncode in ('C','E') and deductiondocumentnumber not in ('261000','261111','261222','261333','261444','261555','261666','261777','261888','261999') then vin else null end) pzjm, "
+				+ "count(case when taxconditioncode ='P' and taxdocumentnumber is not null then vin else null end) pzws "
+				
 				+ "from syjk_ccs_rkmx_temp where 1 = 1 and loggedout = '0' and TAXCONFIRMNO NOT LIKE '3%' and changetype = '0' "
 				+ "and SJCJRQ >= "+"to_date('"+ datefrom +"','yyyy-mm-dd') "
 				+ "and SJCJRQ <= "+"to_date('"+ dateto +"','yyyy-mm-dd') ");
@@ -388,6 +392,8 @@ public class ChartServlet extends HttpServlet {
 					data.append("\"msje\":\""+ssrs.GetText(r, 7)+"\",");
 					data.append("\"msbd\":\""+ssrs.GetText(r, 8)+"\",");
 					data.append("\"mszb\":\""+ssrs.GetText(r, 9)+"\",");
+					data.append("\"pzjm\":\""+ssrs.GetText(r, 10)+"\",");
+					data.append("\"pzws\":\""+ssrs.GetText(r, 11)+"\",");
 					data = new StringBuffer(data.substring(0, data.length()-1));
 					data.append("},");
 				}

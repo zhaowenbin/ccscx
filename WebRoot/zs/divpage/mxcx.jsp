@@ -51,15 +51,18 @@
 			">
 		<thead>		
 			<tr>
-				<th data-options="field:'bxgs',rowspan:1,align:'center',width:100">保险公司</th>
+				<th data-options="field:'bxgs',rowspan:1,align:'center',width:80">保险公司</th>
 				<th data-options="field:'sk',sortable:true,width:100,align:'center'">税款(万元)</th>
-				<th data-options="field:'bds',width:100,align:'center'">保单数(万笔)</th>
-				<th data-options="field:'jsje',rowspan:1,width:100,align:'center'">减税金额(万元)</th>
-				<th data-options="field:'jsbd',rowspan:1,width:100,align:'center'">减税保单(万笔)</th>
-				<th data-options="field:'jszb',rowspan:1,width:100,align:'center'">减税占比%</th>
-				<th data-options="field:'msje',rowspan:1,align:'center',width:100">免税金额(万元)</th>
-				<th data-options="field:'msbd',rowspan:1,width:100,align:'center'">免税保单(万笔)</th>
-				<th data-options="field:'mszb',rowspan:1,width:100,align:'center'">免税占比%</th>
+				<th data-options="field:'bds',width:80,align:'center'">保单数(万笔)</th>
+				<th data-options="field:'jsje',rowspan:1,width:90,align:'center'">减税金额(万元)</th>
+				<th data-options="field:'jsbd',rowspan:1,width:90,align:'center'">减税保单(万笔)</th>
+				<th data-options="field:'jszb',rowspan:1,width:70,align:'center'">减税占比%</th>
+				<th data-options="field:'msje',rowspan:1,align:'center',width:90">免税金额(万元)</th>
+				<th data-options="field:'msbd',rowspan:1,width:90,align:'center'">免税保单(万笔)</th>
+				<th data-options="field:'mszb',rowspan:1,width:70,align:'center'">免税占比%</th>
+				
+				<th data-options="field:'pzjm',rowspan:1,width:70,align:'center'">凭证减免(笔)</th>
+				<th data-options="field:'pzws',rowspan:1,width:70,align:'center'">凭证完税(笔)</th>
 			</tr>
 			<!-- 
 			<th data-options="field:'dsqk',colspan:2,align:'center'">代收情况</th>
