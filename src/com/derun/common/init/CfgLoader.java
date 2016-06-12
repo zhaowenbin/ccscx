@@ -36,6 +36,7 @@ public class CfgLoader implements ServletContextListener {
 	public static String jdcxData = "";
 	public static String sdcxData = "";
 	public static String smcxData = "";
+	private static long period = 24*60*60*1000;
 
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
@@ -66,16 +67,19 @@ public class CfgLoader implements ServletContextListener {
 				}
 			};
 			Calendar calendar = Calendar.getInstance();
-			int year = calendar.get(Calendar.YEAR);
-	        int month = calendar.get(Calendar.MONTH);
-	        int day = calendar.get(Calendar.DAY_OF_MONTH);//每天
-			calendar.set(year, month, day, 4, 30, 00);
+//			int year = calendar.get(Calendar.YEAR);
+//	        int month = calendar.get(Calendar.MONTH);
+//	        int day = calendar.get(Calendar.DAY_OF_MONTH);//每天
+//			calendar.set(year, month, day, 4, 30, 00);
+			calendar.set(Calendar.HOUR_OF_DAY,7);//每天7点更新一次缓存（现在rkmx同步时间点是每天早上6点26）
+			calendar.set(Calendar.MINUTE,0);
+			calendar.set(Calendar.SECOND,0);
 	        Date date = calendar.getTime();
 	        Timer timer = new Timer();
-			timer.schedule(task, date); 
 
 			log.debug("开始缓存查询数据-------");
-			initCxData();
+			timer.schedule(task, date, period);
+//			initCxData();
 			log.debug("----------------缓存数据完成-------");
 			
 		}catch (Exception e) {
