@@ -419,6 +419,58 @@ public class ChartServlet extends HttpServlet {
 		if(ssrs.MaxRow>0){
 			String[] rkmxstr = ssrs.getRowData(1);
 			for(int i=0;i<rkmxstr.length;i++){
+				
+				if(i==7 && rkmxstr[i]!=null){
+					if("T".equals(rkmxstr[i].toUpperCase())){//纳税类型
+						rkmxstr[i] = "正常纳税";
+					}else if("P".equals(rkmxstr[i].toUpperCase())){
+						rkmxstr[i] = "已完税";
+					}else if("C".equals(rkmxstr[i].toUpperCase())){
+						rkmxstr[i] = "减税";
+					}else if("E".equals(rkmxstr[i].toUpperCase())){
+						rkmxstr[i] = "免税";
+					}else if("R".equals(rkmxstr[i].toUpperCase())){
+						rkmxstr[i] = "拒缴";
+					}
+				}else if(i==35 && rkmxstr[i]!=null && rkmxstr[i].length()==4){//保险公司35
+					rkmxstr[i] = getBxgsName(rkmxstr[i]);
+				}else if(i==43 && rkmxstr[i]!=null){//代收状态(平台状态)43
+					if("0".equals(rkmxstr[i])){
+						rkmxstr[i] = "代收";
+					}else if("1".equals(rkmxstr[i])){
+						rkmxstr[i] = "已申报";
+					}else if("4".equals(rkmxstr[i])){
+						rkmxstr[i] = "拒缴";
+					}
+				}else if(i==22 && rkmxstr[i]!=null){//减免原因22
+					if("C".equals(rkmxstr[i].toUpperCase())){
+						rkmxstr[i] = "具备减免税证明";
+					}else if("F".equals(rkmxstr[i].toUpperCase())){
+						rkmxstr[i] = "拖拉机";
+					}else if("A".equals(rkmxstr[i].toUpperCase())){
+						rkmxstr[i] = "军队、武警专用车";
+					}else if("P".equals(rkmxstr[i].toUpperCase())){
+						rkmxstr[i] = "警车";
+					}else if("D".equals(rkmxstr[i].toUpperCase())){
+						rkmxstr[i] = "外国使领馆、国际组织及其人员";
+					}else if("E".equals(rkmxstr[i].toUpperCase())){
+						rkmxstr[i] = "能源减免";
+					}else if("O".equals(rkmxstr[i].toUpperCase())){
+						rkmxstr[i] = "其他";
+					}
+				}else if(i==23 && rkmxstr[i]!=null){//减免方案23
+					if("E".equals(rkmxstr[i].toUpperCase())){
+						rkmxstr[i] = "免税";
+					}else if("P".equals(rkmxstr[i].toUpperCase())){
+						rkmxstr[i] = "比例减免";
+					}else if("A".equals(rkmxstr[i].toUpperCase())){
+						rkmxstr[i] = "金额减免";
+					}
+				}else if((i==72||i==73) && rkmxstr[i]!=null){//地市区县
+					if(!"999999".equals(rkmxstr[i])){
+						rkmxstr[i] = CfgLoader.areaMap.get(rkmxstr[i]);
+					}
+				}
 				sb.append(rkmxstr[i]+"@#");
 			}
 			return sb.substring(0, sb.length()-2);

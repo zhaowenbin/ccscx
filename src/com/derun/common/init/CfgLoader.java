@@ -1,9 +1,12 @@
 package com.derun.common.init;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -30,6 +33,7 @@ public class CfgLoader implements ServletContextListener {
 	
 	private static Logger log = Logger.getLogger(com.derun.common.init.CfgLoader.class.getName());
 	static SSRS cfg = null;	//系统配置信息
+	public static Map<String,String> areaMap = new HashMap<String,String>();
 	ExeSQL es = null;
 	public static String hzcxData = "";
 	public static String mxcxData = "";
@@ -81,6 +85,15 @@ public class CfgLoader implements ServletContextListener {
 			timer.schedule(task, date, period);
 //			initCxData();
 			log.debug("----------------缓存数据完成-------");
+			if(es==null){
+				es = new ExeSQL();
+			}
+			SSRS areaSSRS = es.execSQL("select areacode,areaname from areacode ");
+			if(areaSSRS!=null){
+				for(int i=1; i<=areaSSRS.MaxRow; i++){
+					areaMap.put(areaSSRS.GetText(i, 1), areaSSRS.GetText(i, 2));
+				}
+			}
 			
 		}catch (Exception e) {
 			log.error(e.getLocalizedMessage());
@@ -91,9 +104,16 @@ public class CfgLoader implements ServletContextListener {
 	private void initCxData(){
 		ChartServlet cs = new ChartServlet();
 		Calendar now = Calendar.getInstance();
+		Calendar today = Calendar.getInstance();
 		String citycode = "";
 		String datefrom = String.valueOf(now.get(Calendar.YEAR))+"-01-01";//"2015-11-28";//2015-11-28 张鹏建议2016-01-01
-		String dateto = String.valueOf(now.get(Calendar.YEAR))+"-"+String.valueOf(now.get(Calendar.MONTH) + 1)+"-"+String.valueOf(now.get(Calendar.DAY_OF_MONTH)-1);  ;//2016-04-10
+		//取的昨天日期
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		today.setTime(new Date());  
+		today.add(Calendar.DAY_OF_MONTH, -1);  
+		Date yesterday = today.getTime();  
+		String dateto = sdf.format(yesterday);
+		//String dateto = String.valueOf(now.get(Calendar.YEAR))+"-"+String.valueOf(now.get(Calendar.MONTH) + 1)+"-"+String.valueOf(now.get(Calendar.DAY_OF_MONTH)-1);  ;//2016-04-10
 		String year = String.valueOf(now.get(Calendar.YEAR));  
 		hzcxData = cs.v2hzcx(datefrom, dateto);
 		mxcxData = cs.v2mxcx(datefrom, dateto, citycode);
