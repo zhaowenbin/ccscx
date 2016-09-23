@@ -378,6 +378,7 @@ public class ChartServlet extends HttpServlet {
 		sql.append(" group by paycompanycode ");
 		
 		SSRS ssrs = new ExeSQL().execSQL(sql.toString());
+		double sumCol2 = 0,sumCol3 = 0,sumCol4 = 0,sumCol5 = 0,sumCol6 = 0,sumCol7 = 0,sumCol8 = 0,sumCol9 = 0,sumCol10 = 0,sumCol11 = 0;
 		if(ssrs.MaxRow>0){
 			for(int r=1;r<=ssrs.MaxRow;r++){
 				String bxgsname = this.getBxgsName(ssrs.GetText(r, 1));
@@ -396,9 +397,31 @@ public class ChartServlet extends HttpServlet {
 					data.append("\"pzws\":\""+ssrs.GetText(r, 11)+"\",");
 					data = new StringBuffer(data.substring(0, data.length()-1));
 					data.append("},");
+					sumCol2+=df2(Double.parseDouble(ssrs.GetText(r, 2)));
+					sumCol3+=df2(Double.parseDouble(ssrs.GetText(r, 3)));
+					sumCol4+=df2(Double.parseDouble(ssrs.GetText(r, 4)));
+					sumCol5+=df2(Double.parseDouble(ssrs.GetText(r, 5)));
+					sumCol6+=df2(Double.parseDouble(ssrs.GetText(r, 6)));
+					sumCol7+=df2(Double.parseDouble(ssrs.GetText(r, 7)));
+					sumCol8+=df2(Double.parseDouble(ssrs.GetText(r, 8)));
+					sumCol9+=df2(Double.parseDouble(ssrs.GetText(r, 9)));
+					sumCol10+=df2(Double.parseDouble(ssrs.GetText(r, 10)));
+					sumCol11+=df2(Double.parseDouble(ssrs.GetText(r, 11)));
 				}
 			}
-			data = new StringBuffer(data.substring(0, data.length()-1));
+			data.append("{\"bxgs\":\"合计\",");
+			data.append("\"sk\":\""+df2(sumCol2)+"\",");
+			data.append("\"bds\":\""+df2(sumCol3)+"\",");
+			data.append("\"jsje\":\""+df2(sumCol4)+"\",");
+			data.append("\"jsbd\":\""+df2(sumCol5)+"\",");
+			data.append("\"jszb\":\""+df2(sumCol6)+"\",");
+			data.append("\"msje\":\""+df2(sumCol7)+"\",");
+			data.append("\"msbd\":\""+df2(sumCol8)+"\",");
+			data.append("\"mszb\":\""+df2(sumCol9)+"\",");
+			data.append("\"pzjm\":\""+df2(sumCol10)+"\",");
+			data.append("\"pzws\":\""+df2(sumCol11)+"\"");
+			data.append("}");
+			//data = new StringBuffer(data.substring(0, data.length()-1));
 		}
 		data.append("]");
 		

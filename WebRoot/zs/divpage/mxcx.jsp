@@ -47,7 +47,15 @@
 				rownumbers: true,
 				singleSelect: true,
 				iconCls: 'icon-save',				
-				method: 'post'
+				method: 'post',
+				rowStyler:function(index,row){
+		           if (index==23){ 
+		               return 'background-color:#C0FF3E;';   
+		           }       
+				},
+				onLoadSuccess: function(){
+					$(this).datagrid('freezeRow',23);
+				}
 			">
 		<thead>		
 			<tr>
