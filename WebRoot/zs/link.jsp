@@ -79,6 +79,8 @@ transition: transform .5s ease-in-out;
 			divtitle = '<div style="width:1000px; text-align:left; font-weight:bold; font-size:large; color: #4673A7;">全省车船税代征情况分税目统计分析</div>';
 		}else if(pageid=='bdcx'){
 			divtitle = '<div style="width:1000px; text-align:left; font-weight:bold; font-size:large; color: #4673A7;">保单信息精确查询</div>';
+		}else if(pageid=='gjcx'){
+			divtitle = '<div style="width:1000px; text-align:left; font-weight:bold; font-size:large; color: #4673A7;">高级查询</div>';
 		}else{
 			divtitle = '';
 		}
@@ -106,10 +108,12 @@ transition: transform .5s ease-in-out;
 </script>
 </head>
 <body style="margin-top: 70px; ">
-<!-- 
- -->
 <div style="z-index: -1; margin-left: 25px;margin-top: -60px;">
 <img src="images/sxds.gif" alt="陕西地税" />
+<a href="#" onclick="gotoPage('gjcx')" class="flipper" style="float: right; margin-right: 800px; margin-top: 20px; ">高级查询>></a>
+<!-- 
+<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style=" float: bottom; margin-right: 800px; margin-top: 50px;  width:60px;">高级查询</a>
+ -->
 </div>
 <div style="margin: 0 auto; width: 900px; ">
  <ul>

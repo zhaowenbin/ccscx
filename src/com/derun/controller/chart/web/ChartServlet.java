@@ -44,6 +44,10 @@ public class ChartServlet extends HttpServlet {
 		String citycode = request.getParameter("citycode");
 		String datefrom = request.getParameter("datefrom");
 		String dateto = request.getParameter("dateto");
+		String city = request.getParameter("city");
+		String country = request.getParameter("country");
+		String bxgs = request.getParameter("bxgs");
+		String pzlx = request.getParameter("pzlx");
 		
 		boolean cacheFlag = false;	//界面初始化使用缓存的数据
 		if(request.getParameter("cacheFlag")!=null){
@@ -98,6 +102,8 @@ public class ChartServlet extends HttpServlet {
 			}else{
 				chartData = v2sdcx(datefrom, dateto);
 			}
+		}else if(showType!=null && showType.toUpperCase().equals("V2GJCX")){//属地查询
+			chartData = v2gjcx(city,country,bxgs,pzlx,datefrom, dateto);
 		}
 		//---------------------------------v2------------------------------------
 		else{
@@ -112,7 +118,43 @@ public class ChartServlet extends HttpServlet {
 		}
 
 	}
-
+	public String v2gjcx(String city, String country, String bxgs, String pzlx, String datefrom, String dateto){
+		String[] sumtax = {"0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00"};
+		String[] bds = {"0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00"};
+		StringBuffer sb = new StringBuffer("select "
+				+ " SUM( CASE WHEN citycode = '610100' THEN sumtax ELSE 0 END)/ 1000000||'@'||count(CASE WHEN citycode = '610100' and sumtax>0 THEN taxconfirmno ELSE null END)/10000 xa, "
+				+ " SUM( CASE WHEN citycode = '610200' THEN sumtax ELSE 0 END)/ 1000000||'@'||count(CASE WHEN citycode = '610200' and sumtax>0 THEN taxconfirmno ELSE null END)/10000 tc,  "
+				+ " SUM( CASE WHEN citycode = '610300' THEN sumtax ELSE 0 END)/ 1000000||'@'||count(CASE WHEN citycode = '610300' and sumtax>0 THEN taxconfirmno ELSE null END)/10000 bj,  "
+				+ " SUM( CASE WHEN citycode = '610400' THEN sumtax ELSE 0 END)/ 1000000||'@'||count(CASE WHEN citycode = '610400' and sumtax>0 THEN taxconfirmno ELSE null END)/10000 xy,  "
+				+ " SUM( CASE WHEN citycode = '610500' THEN sumtax ELSE 0 END)/ 1000000||'@'||count(CASE WHEN citycode = '610500' and sumtax>0 THEN taxconfirmno ELSE null END)/10000 wn,  "
+				+ " SUM( CASE WHEN citycode = '610600' THEN sumtax ELSE 0 END)/ 1000000||'@'||count(CASE WHEN citycode = '610600' and sumtax>0 THEN taxconfirmno ELSE null END)/10000 ya,  "
+				+ " SUM( CASE WHEN citycode = '610700' THEN sumtax ELSE 0 END)/ 1000000||'@'||count(CASE WHEN citycode = '610700' and sumtax>0 THEN taxconfirmno ELSE null END)/10000 hz,  "
+				+ " SUM( CASE WHEN citycode = '610800' THEN sumtax ELSE 0 END)/ 1000000||'@'||count(CASE WHEN citycode = '610800' and sumtax>0 THEN taxconfirmno ELSE null END)/10000 yl,  "
+				+ " SUM( CASE WHEN citycode = '610900' THEN sumtax ELSE 0 END)/ 1000000||'@'||count(CASE WHEN citycode = '610900' and sumtax>0 THEN taxconfirmno ELSE null END)/10000 ak,  "
+				+ " SUM( CASE WHEN citycode = '611000' THEN sumtax ELSE 0 END)/ 1000000||'@'||count(CASE WHEN citycode = '611000' and sumtax>0 THEN taxconfirmno ELSE null END)/10000 sl "
+				+ "from syjk_ccs_rkmx_temp where 1=1"
+				+ " and loggedout='0' and TAXCONFIRMNO NOT LIKE '3%' and changetype = '0' "//and TAXCONDITIONCODE NOT IN ('E','P') 
+				+ " and SJCJRQ >= "+"to_date('"+ datefrom +"','yyyy-mm-dd')"
+				+ " and SJCJRQ <= "+"to_date('"+ dateto +"','yyyy-mm-dd')  ");
+		SSRS ssrs = new ExeSQL().execSQL(sb.toString());
+		double hjSumtax = 0,hjBds = 0;
+		if(ssrs.MaxRow>0){
+			for(int c=0;c<=ssrs.MaxCol-1;c++){
+				String sumtax2 = ssrs.GetText(1, c+1).split("@")[0];
+				String bds2 = ssrs.GetText(1, c+1).split("@")[1];
+				hjSumtax += Double.parseDouble(sumtax2);
+				hjBds += Double.parseDouble(bds2);
+				sumtax[c] = String.valueOf(df2(Double.parseDouble(sumtax2)));
+				bds[c] = String.valueOf(df2(Double.parseDouble(bds2)));
+			}
+			hjSumtax = df2(hjSumtax);
+			hjBds = df2(hjBds);
+			sumtax[10] = String.valueOf(hjSumtax);
+			bds[10] = String.valueOf(hjBds);
+		}
+		return Arrays.toString(sumtax)+"@"+Arrays.toString(bds);
+	}
+	
 	public String v2sdcx(String datefrom, String dateto){
 		String[] sumtax = {"0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00"};
 		String[] bds = {"0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00"};

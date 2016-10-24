@@ -5,7 +5,7 @@
 	</DRIVERS>
 	<DBPOOL>
 		<NAME>readPool</NAME>
-		<URL>jdbc:oracle:thin:@192.168.109.129:1521:orcl</URL> 
+		<URL>jdbc:oracle:thin:tpl2/tpl2@192.168.89.128:1521:orcl</URL> 
 		<USER>tpl2</USER>
 		<PASSWORD>tpl2</PASSWORD>
 		<!-- 
