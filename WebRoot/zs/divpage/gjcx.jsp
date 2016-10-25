@@ -11,6 +11,25 @@
     }else{
     	document.write("<script type=\"text/javascript\" src=\"..\/js\/jquery-2.1.4.min.js\"><\/script>");
     }
+	function onCityChange(){//级联加载区县代码
+		$('#country').datebox('clear');
+		var cityCode = $('#city').datebox('getValue');
+		var newCountry = JSON.parse('[]');
+		if(cityCode!='--请选择--'){
+			var cityHead = cityCode.substring(0,4);
+			$.getJSON("../data/country.json",function(countryObj){
+			    for(var i=0;i<countryObj.length;i++){
+			    	if(countryObj[i].id.substring(0,4)==cityHead){
+			    		//alert(JSON.stringify(countryObj[i]));
+			    		newCountry.push(countryObj[i]);
+			    	}
+			    }
+				$('#country').combobox('loadData', newCountry);
+			});
+		}
+		//alert(JSON.stringify(newCountry));
+		return newCountry;
+	}
 	</script>
 	<!-- 
 	<script type="text/javascript" src="../js/jquery-2.1.4.min.js"></script>
@@ -30,11 +49,14 @@
 	-->
 	<div style="margin: 0 auto; width: 950px">
 	<div style="margin:0px 0;">
-	地市：<input class="easyui-combobox" id="city" style="width:95px;" value="--请选择--"
+	地市：<input class="easyui-combobox" id="city" style="width:95px;" value="--请选择--" 
 			data-options=" url:'../data/city.json',
 					method:'get',
 					valueField:'id',
 					textField:'text',
+					onSelect:function(){
+						onCityChange();
+					},
 					panelHeight:'auto'
 			">
 	区县：<input class="easyui-combobox" id="country" style="width:95px;" value="--请选择--"
@@ -56,8 +78,8 @@
 			 	<option value="jm">减免税</option>
 				<option value="ws">完税</option>
 			 </select>
-	起期：<input id="datefrom" type="text" style="width:95px;" class="easyui-datebox" >
-	止期：<input id="dateto" type="text" style="width:95px;" class="easyui-datebox" >
+	起期(含)：<input id="datefrom" type="text" style="width:95px;" class="easyui-datebox" >
+	止期(含)：<input id="dateto" type="text" style="width:95px;" class="easyui-datebox" >
 	</div>
 	<div style="margin:30px 0;"></div>
 	<a id="btn" href="#" style="margin-left: 890px; margin-bottom: 5px; " onclick="reload()" class="easyui-linkbutton" data-options="iconCls:'icon-reload'">查询</a>
@@ -78,12 +100,12 @@
 				<th data-options="field:'vin',rowspan:1,width:65,align:'center'">车架号</th>
 				<th data-options="field:'pzlx',rowspan:1,width:65,align:'center'">凭证类型</th>
 				<th data-options="field:'pzh',rowspan:1,width:65,align:'center'">凭证号</th>
-				<th data-options="field:'kjswjgdm',rowspan:1,width:65,align:'center'">开具税务机关代码</th>
-				<th data-options="field:'kjswjgmc',rowspan:1,width:65,align:'center'">开具税务机关名称</th>
+				<th data-options="field:'kjswjgdm',rowspan:1,width:75,align:'center'">税务机关代码</th>
+				<th data-options="field:'kjswjgmc',rowspan:1,width:75,align:'center'">税务机关名称</th>
 				<th data-options="field:'skje',rowspan:1,width:65,align:'center'">税款金额</th>
 				<th data-options="field:'ds',rowspan:1,width:65,align:'center'">地市</th>
 				<th data-options="field:'qx',rowspan:1,width:65,align:'center'">区县</th>
-				<th data-options="field:'cjsj',rowspan:1,width:65,align:'center'">采集时间</th>
+				<th data-options="field:'cjsj',rowspan:1,width:85,align:'center'">采集时间</th>
 			</tr>
 		</thead>
 	</table>
@@ -109,11 +131,47 @@
 			     time: 5*1000,
 			     skin: 'layer-ext-seaning' 
 			 	});
+			vcity='';
 			return false;
 		}
 		var vcountry = $('#country').datebox('getValue');
+		if(vcountry==null||vcountry==''||vcountry=='--请选择--'){
+			vcountry='';
+		}
 		var vbxgs = $('#bxgs').datebox('getValue');
+		if(vbxgs==null||vbxgs==''||vbxgs=='--请选择--'){
+			vbxgs='';
+		}
 		var vpzlx = $('#pzlx').datebox('getValue');
+		if(vpzlx==null||vpzlx==''||vpzlx=='--请选择--'){
+			layer.alert('请选择凭证类型', {
+			     icon: 9,
+			     time: 5*1000,
+			     skin: 'layer-ext-seaning' 
+			 	});
+			vpzlx='';
+			return false;
+		}
+		var datefrom = $('#datefrom').datebox('getValue'); //yyyy-mm-dd
+		if(datefrom==null||datefrom==''){
+			layer.alert('请选择起始日期', {
+			     icon: 9,
+			     time: 5*1000,
+			     skin: 'layer-ext-seaning' 
+			 	});
+			datefrom='';
+			return false;
+		}
+		var dateto = $('#dateto').datebox('getValue'); 
+		if(dateto==null||dateto==''){
+			layer.alert('请选择终止日期', {
+			     icon: 9,
+			     time: 5*1000,
+			     skin: 'layer-ext-seaning' 
+			 	});
+			dateto='';
+			return false;
+		}
 		var index = layer.load(
 				   3,{
 				      shade:[0.8,'#000']//,
@@ -121,15 +179,6 @@
 				   }
 				); 
 		try{
-			layer.alert('地市：'+vcity+' 区县：'+vcountry+" 保险公司："+vbxgs+" 凭证类型："+vpzlx, {
-			     icon: 9,
-			     time: 5*1000,
-			     skin: 'layer-ext-seaning' 
-			 	});
-			
-			var datefrom = $('#datefrom').datebox('getValue'); //yyyy-mm-dd
-			var dateto = $('#dateto').datebox('getValue'); 
-			//var d = new Date();
 			var yesterday = GetDateStr(-1);	//d.getFullYear()+'-'+(d.getMonth()+1)+'-'+(d.getDate());
 			if(datefrom==''){
 				//datefrom='2015-11-28';
@@ -188,7 +237,15 @@
 	    			var newData = JSON.parse(data);
 	    			$('#dg').datagrid('loadData',newData);
 					layer.close(index);
-				}
+				},  
+		        error : function() {  
+		        	layer.alert('数据加载失败', {
+					     icon: 9,
+					     time: 5*1000,
+					     skin: 'layer-ext-seaning' 
+					 	});
+		            layer.close(index);
+		        }
 	    	});
 			//-----------------------------------
 		}catch(e){

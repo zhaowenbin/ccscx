@@ -119,40 +119,174 @@ public class ChartServlet extends HttpServlet {
 
 	}
 	public String v2gjcx(String city, String country, String bxgs, String pzlx, String datefrom, String dateto){
-		String[] sumtax = {"0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00"};
-		String[] bds = {"0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00"};
-		StringBuffer sb = new StringBuffer("select "
-				+ " SUM( CASE WHEN citycode = '610100' THEN sumtax ELSE 0 END)/ 1000000||'@'||count(CASE WHEN citycode = '610100' and sumtax>0 THEN taxconfirmno ELSE null END)/10000 xa, "
-				+ " SUM( CASE WHEN citycode = '610200' THEN sumtax ELSE 0 END)/ 1000000||'@'||count(CASE WHEN citycode = '610200' and sumtax>0 THEN taxconfirmno ELSE null END)/10000 tc,  "
-				+ " SUM( CASE WHEN citycode = '610300' THEN sumtax ELSE 0 END)/ 1000000||'@'||count(CASE WHEN citycode = '610300' and sumtax>0 THEN taxconfirmno ELSE null END)/10000 bj,  "
-				+ " SUM( CASE WHEN citycode = '610400' THEN sumtax ELSE 0 END)/ 1000000||'@'||count(CASE WHEN citycode = '610400' and sumtax>0 THEN taxconfirmno ELSE null END)/10000 xy,  "
-				+ " SUM( CASE WHEN citycode = '610500' THEN sumtax ELSE 0 END)/ 1000000||'@'||count(CASE WHEN citycode = '610500' and sumtax>0 THEN taxconfirmno ELSE null END)/10000 wn,  "
-				+ " SUM( CASE WHEN citycode = '610600' THEN sumtax ELSE 0 END)/ 1000000||'@'||count(CASE WHEN citycode = '610600' and sumtax>0 THEN taxconfirmno ELSE null END)/10000 ya,  "
-				+ " SUM( CASE WHEN citycode = '610700' THEN sumtax ELSE 0 END)/ 1000000||'@'||count(CASE WHEN citycode = '610700' and sumtax>0 THEN taxconfirmno ELSE null END)/10000 hz,  "
-				+ " SUM( CASE WHEN citycode = '610800' THEN sumtax ELSE 0 END)/ 1000000||'@'||count(CASE WHEN citycode = '610800' and sumtax>0 THEN taxconfirmno ELSE null END)/10000 yl,  "
-				+ " SUM( CASE WHEN citycode = '610900' THEN sumtax ELSE 0 END)/ 1000000||'@'||count(CASE WHEN citycode = '610900' and sumtax>0 THEN taxconfirmno ELSE null END)/10000 ak,  "
-				+ " SUM( CASE WHEN citycode = '611000' THEN sumtax ELSE 0 END)/ 1000000||'@'||count(CASE WHEN citycode = '611000' and sumtax>0 THEN taxconfirmno ELSE null END)/10000 sl "
-				+ "from syjk_ccs_rkmx_temp where 1=1"
-				+ " and loggedout='0' and TAXCONFIRMNO NOT LIKE '3%' and changetype = '0' "//and TAXCONDITIONCODE NOT IN ('E','P') 
-				+ " and SJCJRQ >= "+"to_date('"+ datefrom +"','yyyy-mm-dd')"
-				+ " and SJCJRQ <= "+"to_date('"+ dateto +"','yyyy-mm-dd')  ");
-		SSRS ssrs = new ExeSQL().execSQL(sb.toString());
-		double hjSumtax = 0,hjBds = 0;
-		if(ssrs.MaxRow>0){
-			for(int c=0;c<=ssrs.MaxCol-1;c++){
-				String sumtax2 = ssrs.GetText(1, c+1).split("@")[0];
-				String bds2 = ssrs.GetText(1, c+1).split("@")[1];
-				hjSumtax += Double.parseDouble(sumtax2);
-				hjBds += Double.parseDouble(bds2);
-				sumtax[c] = String.valueOf(df2(Double.parseDouble(sumtax2)));
-				bds[c] = String.valueOf(df2(Double.parseDouble(bds2)));
-			}
-			hjSumtax = df2(hjSumtax);
-			hjBds = df2(hjBds);
-			sumtax[10] = String.valueOf(hjSumtax);
-			bds[10] = String.valueOf(hjBds);
+		StringBuffer data = new StringBuffer("[");
+		StringBuffer sb = new StringBuffer();
+		if(pzlx!=null && "ws".equals(pzlx)){
+			sb.append(
+					" select row_number() over(order by vin) id,  "
+							+ " paycompanycode bxgsmc, "
+							+ " taxpayername nsrmc, taxpayeridentificationcode nsrsbh, hphm , vin ,'完税' pzlx, "
+							+ " taxdocumentnumber pzh,taxdepartmentcode kjswjgdm,taxdepartment kjswjgmc,annualtaxamount skje, "
+							+ " (select areaname from areacode where areacode=citycode) ds,  "
+							+ " (select areaname from areacode where areacode=countrycode) qx, "
+							+ " sjcjrq cjsj "
+							+ " from syjk_ccs_rkmx_temp aa "
+							+ " where 1=1 "
+							+ " and taxconditioncode='P' "
+							+ " and taxdocumentnumber is not null " 
+							+ gjcxWhere(city, country, bxgs, datefrom, dateto)
+							+ " and not exists ( "
+							+ "    select vin " 
+							+ "   from syjk_ccs_rkmx_temp bb "
+							+ "   where 1=1 "  
+							+ "   and taxconditioncode='P' "
+							+ "   and taxdocumentnumber is not null " 
+							+ gjcxWhere(city, country, bxgs, datefrom, dateto)
+							+ "   and aa.vin = bb.vin "
+							+ "    group by vin having count(vin)>1 "
+							+ " ) "
+							
+				+ " union " 
+				
+				+ " select * "
+				+ " from "
+				+ " ( "
+				+ "   select  row_number() over(order by vin) id, " 
+				+ " paycompanycode bxgsmc, "
+				+ " taxpayername nsrmc, taxpayeridentificationcode nsrsbh, hphm , vin ,'完税' pzlx, "
+				+ " taxdocumentnumber pzh,taxdepartmentcode kjswjgdm,taxdepartment kjswjgmc,annualtaxamount skje, "
+				+ " (select areaname from areacode where areacode=citycode) ds, " 
+				+ " (select areaname from areacode where areacode=countrycode) qx, "
+				+ " sjcjrq cjsj "
+				+ "   from syjk_ccs_rkmx_temp cc "
+				+ "   where 1=1 "  
+				+ "   and taxconditioncode='P' "
+				+ "   and taxdocumentnumber is not null " 
+				+ gjcxWhere(city, country, bxgs, datefrom, dateto)
+				+ "   and exists ( "
+				+ "      select vin " 
+				+ "     from syjk_ccs_rkmx_temp dd "
+				+ "     where 1=1 "    
+				+ "     and taxconditioncode='P' "
+				+ "     and taxdocumentnumber is not null " 
+				+ gjcxWhere(city, country, bxgs, datefrom, dateto)
+				+ "     and cc.vin = dd.vin "
+				+ "      group by vin having count(vin)>1 "
+				+ "   )order by vin,hphm "
+				+ " )where 1=1 "
+				+ " and mod(id,2)=1" 
+				+ " order by bxgsmc,cjsj,ds,qx ");
+		}else if(pzlx!=null && "jm".equals(pzlx)){
+			sb.append(
+				" select row_number() over(order by vin) id, " 
+				+ " paycompanycode bxgsmc, "
+				+ " taxpayername nsrmc, taxpayeridentificationcode nsrsbh, hphm , vin ,'减免' pzlx, "
+				+ " deductiondocumentnumber pzh,deductiondepartmentcode kjswjgdm,deductiondepartment kjswjgmc, "
+				+ " case when taxconditioncode = 'C' and deduction>0 then deduction "
+				+ "  when taxconditioncode = 'C' and deduction=0 then deductiondueproportion*annualtaxamount "
+				+ "  when taxconditioncode = 'E' then annualtaxamount "
+				+ "    end skje, "
+				+ "    (select areaname from areacode where areacode=citycode) ds, " 
+				+ " (select areaname from areacode where areacode=countrycode) qx, " 
+				+ "    sjcjrq cjsj "
+				+ " from syjk_ccs_rkmx_temp aa "
+				+ " where 1=1 "
+				+ " and taxconditioncode in ('C','E') "
+				+ " and deductiondocumentnumber not in ('261000','261111','261222','261333','261444','261555','261666','261777','261888','261999') "
+				+ gjcxWhere(city, country, bxgs, datefrom, dateto)
+				+ " and not exists( "
+				+ "     select vin "
+				+ "   from syjk_ccs_rkmx_temp bb "
+				+ "   where 1=1 "  
+				+ "   and taxconditioncode in ('C','E') "
+				+ "   and deductiondocumentnumber not in ('261000','261111','261222','261333','261444','261555','261666','261777','261888','261999') "
+				+ gjcxWhere(city, country, bxgs, datefrom, dateto)
+				+ "   and aa.vin = bb.vin "
+				+ "    group by vin having count(vin)>1 "
+				+ " ) " 
+
+				+ " union " 
+
+				+ " select * "
+				+ " from "
+				+ " ( "
+				+ "   select row_number() over(order by vin) id, " 
+				+ " paycompanycode bxgsmc, "
+				+ " taxpayername nsrmc, taxpayeridentificationcode nsrsbh, hphm , vin ,'减免' pzlx, "
+				+ " deductiondocumentnumber pzh,deductiondepartmentcode kjswjgdm,deductiondepartment kjswjgmc, "
+				+ " case when taxconditioncode = 'C' and deduction>0 then deduction "
+				+ "   when taxconditioncode = 'C' and deduction=0 then deductiondueproportion*annualtaxamount "
+				+ "   when taxconditioncode = 'E' then annualtaxamount "
+				+ "     end skje, "
+				+ "     (select areaname from areacode where areacode=citycode) ds, " 
+				+ " (select areaname from areacode where areacode=countrycode) qx, " 
+				+ "     sjcjrq cjsj "
+				+ "   from syjk_ccs_rkmx_temp cc "
+				+ "   where 1=1 "  
+				+ "   and taxconditioncode in ('C','E') "
+				+ "   and deductiondocumentnumber not in ('261000','261111','261222','261333','261444','261555','261666','261777','261888','261999') "
+				+ gjcxWhere(city, country, bxgs, datefrom, dateto)
+				+ "   and exists( "
+				+ "       select vin "
+				+ "     from syjk_ccs_rkmx_temp dd "
+				+ "     where 1=1 "    
+				+ "     and taxconditioncode in ('C','E') "
+				+ "     and deductiondocumentnumber not in ('261000','261111','261222','261333','261444','261555','261666','261777','261888','261999') "
+				+ gjcxWhere(city, country, bxgs, datefrom, dateto)  
+				+ "     and cc.vin = dd.vin "     
+				+ "      group by vin having count(vin)>1 " 
+				+ "   ) " 
+				+ "   order by vin,hphm "
+				+ " )where 1=1 "
+				+ " and mod(id,2)=1 "
+				+ " order by bxgsmc,cjsj,ds,qx "); 
 		}
-		return Arrays.toString(sumtax)+"@"+Arrays.toString(bds);
+		
+		SSRS ssrs = new ExeSQL().execSQL(sb.toString());
+		if(ssrs.MaxRow>0){
+			for(int r=1;r<=ssrs.MaxRow;r++){
+				String bxgsname = this.getBxgsName(ssrs.GetText(r, 2));
+				if(!"".equals(bxgsname)){
+					data.append("{");
+					data.append("\"bxgsmc\":\""+bxgsname+"\",");
+					data.append("\"nsrmc\":\""+ssrs.GetText(r, 3)+"\",");
+					data.append("\"nsrsbh\":\""+ssrs.GetText(r, 4)+"\",");
+					data.append("\"hphm\":\""+ssrs.GetText(r, 5)+"\",");
+					data.append("\"vin\":\""+ssrs.GetText(r, 6)+"\",");
+					data.append("\"pzlx\":\""+ssrs.GetText(r, 7)+"\",");
+					data.append("\"pzh\":\""+ssrs.GetText(r, 8)+"\",");
+					data.append("\"kjswjgdm\":\""+ssrs.GetText(r, 9)+"\",");
+					data.append("\"kjswjgmc\":\""+ssrs.GetText(r, 10)+"\",");
+					data.append("\"skje\":\""+ssrs.GetText(r, 11)+"\",");
+					data.append("\"ds\":\""+ssrs.GetText(r, 12)+"\",");
+					data.append("\"qx\":\""+ssrs.GetText(r, 13)+"\",");
+					data.append("\"cjsj\":\""+ssrs.GetText(r, 14)+"\",");
+					data = new StringBuffer(data.substring(0, data.length()-1));
+					data.append("},");
+				}
+			}
+		}
+		if(data.length()>1){
+			return data.substring(0, data.length()-1)+"]";
+		}else{
+			return "[]";
+		}
+	}
+	
+	private String gjcxWhere(String city, String country, String bxgs, String datefrom, String dateto){
+		StringBuffer sb = new StringBuffer();
+		if(city!=null&&!"".equals(city)){
+			sb.append(" and citycode='"+city+"' ");
+		}
+		if(country!=null&&!"".equals(country)){
+			sb.append(" and countrycode='"+country+"' ");
+		}
+		if(bxgs!=null&&!"".equals(bxgs)){
+			sb.append(" and paycompanycode='"+bxgs+"' ");
+		}
+		sb.append(" and SJCJRQ >= "+"to_date('"+ datefrom +"','yyyy-mm-dd')");
+		sb.append(" and SJCJRQ <= "+"to_date('"+ dateto +"','yyyy-mm-dd')");
+		return sb.toString();
 	}
 	
 	public String v2sdcx(String datefrom, String dateto){
