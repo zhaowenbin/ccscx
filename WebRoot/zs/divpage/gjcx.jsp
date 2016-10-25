@@ -30,6 +30,50 @@
 		//alert(JSON.stringify(newCountry));
 		return newCountry;
 	}
+	
+	function exportExcel(){
+		var data = $('#dg').datagrid('getData');
+		$.ajax({
+    		type:"post",//post方法
+    		url:parent.basePath+'chartServlet',
+    		data:{
+    			time:new Date(),
+    			showType:'EXPORTEXCEL',
+    			city:$('#city').combobox('getValue'),
+    			country:$('#country').combobox('getValue'),
+    			bxgs:$('#bxgs').combobox('getValue'),
+    			pzlx:$('#pzlx').combobox('getValue'),
+    			datefrom:$('#datefrom').datebox('getValue'),
+    			dateto:$('#dateto').datebox('getValue'),
+    			datatable:JSON.stringify(data)
+    		},
+    		success:function(resData) {
+				layer.close(index);
+				if(resData=='true'){
+					layer.alert('导出成功', {
+					     icon: 9,
+					     time: 5*1000,
+					     skin: 'layer-ext-seaning' 
+					 	});
+				}else{
+					layer.alert('导出数据失败', {
+					     icon: 9,
+					     time: 5*1000,
+					     skin: 'layer-ext-seaning' 
+					 	});
+				}
+			},  
+	        error : function() {  
+	        	layer.alert('导出数据失败', {
+				     icon: 9,
+				     time: 5*1000,
+				     skin: 'layer-ext-seaning' 
+				 	});
+	            layer.close(index);
+	        }
+    	});
+	}
+	
 	</script>
 	<!-- 
 	<script type="text/javascript" src="../js/jquery-2.1.4.min.js"></script>
@@ -110,7 +154,7 @@
 		</thead>
 	</table>
 	</div>
-	<button style="float: left;margin-top: 15px; margin-left: 450px" >数据导出</button>
+	<button style="float: left;margin-top: 15px; margin-left: 450px" onclick="exportExcel()" >数据导出</button>
 	<a href="#" onclick="goLinkPage()" style="position: absolute; float:right; margin-left:300px; margin-top: 0px;"><img src="../images/return.png" width="80px" height="50px" border="0"></a>
 	
 	<script type="text/javascript">
@@ -124,7 +168,7 @@
 			
 	function reload(){
 		
-		var vcity = $('#city').datebox('getValue');
+		var vcity = $('#city').combobox('getValue');
 		if(vcity==null||vcity==''||vcity=='--请选择--'){
 			layer.alert('请选择地市', {
 			     icon: 9,
@@ -134,15 +178,15 @@
 			vcity='';
 			return false;
 		}
-		var vcountry = $('#country').datebox('getValue');
+		var vcountry = $('#country').combobox('getValue');
 		if(vcountry==null||vcountry==''||vcountry=='--请选择--'){
 			vcountry='';
 		}
-		var vbxgs = $('#bxgs').datebox('getValue');
+		var vbxgs = $('#bxgs').combobox('getValue');
 		if(vbxgs==null||vbxgs==''||vbxgs=='--请选择--'){
 			vbxgs='';
 		}
-		var vpzlx = $('#pzlx').datebox('getValue');
+		var vpzlx = $('#pzlx').combobox('getValue');
 		if(vpzlx==null||vpzlx==''||vpzlx=='--请选择--'){
 			layer.alert('请选择凭证类型', {
 			     icon: 9,
