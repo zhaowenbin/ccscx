@@ -29,6 +29,14 @@
     <servlet-name>chartServlet</servlet-name>
     <url-pattern>/chartServlet</url-pattern>
   </servlet-mapping>
+    <servlet>
+    <servlet-name>exportServlet</servlet-name>
+    <servlet-class>com.derun.controller.chart.web.ExportServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>exportServlet</servlet-name>
+    <url-pattern>/exportServlet</url-pattern>
+  </servlet-mapping>
   <listener>
     <listener-class>com.derun.common.init.CfgLoader</listener-class>
   </listener>

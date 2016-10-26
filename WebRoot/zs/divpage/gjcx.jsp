@@ -35,7 +35,8 @@
 		var data = $('#dg').datagrid('getData');
 		$.ajax({
     		type:"post",//post方法
-    		url:parent.basePath+'chartServlet',
+    		url:parent.basePath+'exportServlet',
+    		async: false,
     		data:{
     			time:new Date(),
     			showType:'EXPORTEXCEL',
@@ -48,15 +49,15 @@
     			datatable:JSON.stringify(data)
     		},
     		success:function(resData) {
-				layer.close(index);
-				if(resData=='true'){
+				if(resData.endWith('.xls')){
+						alert(resData);
 					layer.alert('导出成功', {
 					     icon: 9,
 					     time: 5*1000,
 					     skin: 'layer-ext-seaning' 
 					 	});
 				}else{
-					layer.alert('导出数据失败', {
+					layer.alert('导出数据失败，失败原因'+resData, {
 					     icon: 9,
 					     time: 5*1000,
 					     skin: 'layer-ext-seaning' 
