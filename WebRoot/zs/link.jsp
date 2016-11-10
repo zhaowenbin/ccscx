@@ -36,9 +36,9 @@ img{border:0;}
  /*
 .flip-container:hover .back {transform: rotateY(0deg); -webkit-transform: rotateY(0deg);-moz-transform: rotateY(0deg);-ms-transform: rotateY(0deg);-o-transform: rotateY(0deg); z-index:2;}
 .flip-container:hover .front { transform: rotateY(180deg);-webkit-transform: rotateY(180deg);-moz-transform: rotateY(180deg);-ms-transform: rotateY(180deg);-o-transform: rotateY(180deg); z-index:1}
- */
 .flip-container, .front, .back {width: 160px;height: 153px;}
 .flipper {transition:transform 0.6s ease-out;
+ */
 transition: transform .5s ease-in-out;
 -webkit-transition: transform .5s ease-in-out;
 -moz-transition: transform .5s ease-in-out;
@@ -55,6 +55,11 @@ transition: transform .5s ease-in-out;
 .front {z-index: 2;transform: rotateY(0deg);transform: rotateY(0deg); -webkit-transform: rotateY(0deg);-moz-transform: rotateY(0deg);-ms-transform: rotateY(0deg);-o-transform: rotateY(0deg);}
 .back { z-index:1;transform: rotateY(-180deg);transform: rotateY(-180deg);-webkit-transform: rotateY(-180deg);-moz-transform: rotateY(-180deg);
 -ms-transform: rotateY(-180deg);-o-transform: rotateY(-180deg);}
+
+
+
+
+
 </style>
 <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="layer/layer.js"></script>
@@ -79,8 +84,10 @@ transition: transform .5s ease-in-out;
 			divtitle = '<div style="width:1000px; text-align:left; font-weight:bold; font-size:large; color: #4673A7;">全省车船税代征情况分税目统计分析</div>';
 		}else if(pageid=='bdcx'){
 			divtitle = '<div style="width:1000px; text-align:left; font-weight:bold; font-size:large; color: #4673A7;">保单信息精确查询</div>';
-		}else if(pageid=='gjcx'){
-			divtitle = '<div style="width:1000px; text-align:left; font-weight:bold; font-size:large; color: #4673A7;">高级查询</div>';
+		}else if(pageid=='dzcx'){
+			divtitle = '<div style="width:1000px; text-align:left; font-weight:bold; font-size:large; color: #4673A7;">定制查询</div>';
+		}else if(pageid=='ycfx'){
+			divtitle = '<div style="width:1000px; text-align:left; font-weight:bold; font-size:large; color: #4673A7;">异常分析</div>';
 		}else{
 			divtitle = '';
 		}
@@ -105,70 +112,130 @@ transition: transform .5s ease-in-out;
 		parent.layer.close(linkwinindex);
 		window.location.href=window.location.href;
 	}
+	
+	function prevDiv(){
+		$("#nextArrow").show();
+		$("#prevArrow").hide();
+		$("#p1").show();
+		$("#p2").hide();
+	}
+	
+	function nextDiv(){
+		$("#prevArrow").show();
+		$("#p1").hide();
+		$("#p2").show();
+		$("#nextArrow").hide();
+	}
+	
 </script>
 </head>
 <body style="margin-top: 70px; ">
 <div style="z-index: -1; margin-left: 25px;margin-top: -60px;">
 <img src="images/sxds.gif" alt="陕西地税" />
-<a href="#" onclick="gotoPage('gjcx')" class="flipper" style="float: right; margin-right: 800px; margin-top: 20px; ">高级查询>></a>
 <!-- 
+<a href="#" onclick="gotoPage('gjcx')" class="flipper" style="float: right; margin-right: 800px; margin-top: 20px; ">高级查询>></a>
 <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-search'" style=" float: bottom; margin-right: 800px; margin-top: 50px;  width:60px;">高级查询</a>
  -->
 </div>
-<div style="margin: 0 auto; width: 900px; ">
- <ul>
- <li class="flip-container " ontouchstart="this.classList.toggle('hover');">
- <a href="#" onclick="gotoPage('hzcx')" class="flipper">
- <div class="front "><img src="images/hzcx2.png"/></div>
- <!-- 
- <div class="back " ><img src="images/hzcx2.png"></div>
-  -->
- </a>
- </li>
- <li class="flip-container " ontouchstart="this.classList.toggle('hover');">
- <a href="#" onclick="gotoPage('mxcx')" class="flipper">
- <div class="front "><img src="images/mxcx2.png"/></div>
- <!-- 
- <div class="back " ><img src="images/mxcx2.png"></div>
-  -->
- </a>
- </li>
- <li class="flip-container " ontouchstart="this.classList.toggle('hover');">
- <a href="#" onclick="gotoPage('jdcx')" class="flipper">
- <div class="front "><img src="images/jdcx2.png"/></div>
- <!-- 
- <div class="back " ><img src="images/jdcx2.png"></div>
-  -->
- </a>
- </li>
+
+<div id="prevArrow" onclick="prevDiv()" style="float: left;  display: none; height:300px; padding-left: 35px; padding-top: 150px;"><img src="images/prevDiv.png"></div>
+<div style="float: left;">
+<div id="p1" style="margin: 0 auto; width: 900px; display: block; ">
+	 <ul>
+	 <li class="flip-container " ontouchstart="this.classList.toggle('hover');">
+	 <a href="#" onclick="gotoPage('hzcx')" class="flipper">
+	 <div class="front "><img src="images/hzcx2.png"/></div>
+	 <!-- 
+	 <div class="back " ><img src="images/hzcx2.png"></div>
+	  -->
+	 </a>
+	 </li>
+	 <li class="flip-container " ontouchstart="this.classList.toggle('hover');">
+	 <a href="#" onclick="gotoPage('mxcx')" class="flipper">
+	 <div class="front "><img src="images/mxcx2.png"/></div>
+	 <!-- 
+	 <div class="back " ><img src="images/mxcx2.png"></div>
+	  -->
+	 </a>
+	 </li>
+	 <li class="flip-container " ontouchstart="this.classList.toggle('hover');">
+	 <a href="#" onclick="gotoPage('jdcx')" class="flipper">
+	 <div class="front "><img src="images/jdcx2.png"/></div>
+	 <!-- 
+	 <div class="back " ><img src="images/jdcx2.png"></div>
+	  -->
+	 </a>
+	 </li>
+	 
+	 <li class="flip-container " ontouchstart="this.classList.toggle('hover');">
+	 <a href="#" onclick="gotoPage('sdcx')" class="flipper">
+	 <div class="front "><img src="images/sdcx2.png"/></div>
+	 <!-- 
+	 <div class="back " ><img src="images/sdcx2.png"></div>
+	  -->
+	 </a>
+	 </li>
+	 <li class="flip-container " ontouchstart="this.classList.toggle('hover');">
+	 <a href="#" onclick="gotoPage('smcx')" class="flipper">
+	 <div class="front "><img src="images/smcx2.png"/></div>
+	 <!-- 
+	 <div class="back " ><img src="images/smcx2.png"></div>
+	  -->
+	 </a>
+	 </li>
+	 <li class="flip-container " ontouchstart="this.classList.toggle('hover');">
+	 <a href="#" onclick="gotoPage('bdcx')" class="flipper">
+	 <div class="front "><img src="images/bdcx2.png"/></div>
+	 <!-- 
+	 <div class="back " ><img src="images/bdcx2.png"></div>
+	  -->
+	 </a>
+	 </li>
+	 </ul>
+</div>
  
- <li class="flip-container " ontouchstart="this.classList.toggle('hover');">
- <a href="#" onclick="gotoPage('sdcx')" class="flipper">
- <div class="front "><img src="images/sdcx2.png"/></div>
- <!-- 
- <div class="back " ><img src="images/sdcx2.png"></div>
-  -->
- </a>
- </li>
- <li class="flip-container " ontouchstart="this.classList.toggle('hover');">
- <a href="#" onclick="gotoPage('smcx')" class="flipper">
- <div class="front "><img src="images/smcx2.png"/></div>
- <!-- 
- <div class="back " ><img src="images/smcx2.png"></div>
-  -->
- </a>
- </li>
- <li class="flip-container " ontouchstart="this.classList.toggle('hover');">
- <a href="#" onclick="gotoPage('bdcx')" class="flipper">
- <div class="front "><img src="images/bdcx2.png"/></div>
- <!-- 
- <div class="back " ><img src="images/bdcx2.png"></div>
-  -->
- </a>
- </li>
- </ul>
+	<div id="p2" style="margin: 0 auto; width: 900px; position: absolute;  display: none; padding-bottom: 50px; ">
+	 <ul>
+	 <li class="flip-container " ontouchstart="this.classList.toggle('hover');">
+	 <a href="#" onclick="gotoPage('dzcx')" class="flipper">
+	 <div class="front "><img src="images/dzcx.png"/></div>
+	 </a>
+	 </li>
+	 <li class="flip-container " ontouchstart="this.classList.toggle('hover');">
+	 <a href="#" onclick="gotoPage('ycfx')" class="flipper">
+	 <div class="front "><img src="images/ycfx.png"/></div>
+	 </a>
+	 </li>
+	 
+	 <!-- 
+	 <li class="flip-container " ontouchstart="this.classList.toggle('hover');">
+	 <a href="#" onclick="gotoPage('jdcx')" class="flipper">
+	 <div class="front "><img src="images/jdcx2.png"/></div>
+	 </a>
+	 </li>
+	 
+	 <li class="flip-container " ontouchstart="this.classList.toggle('hover');">
+	 <a href="#" onclick="gotoPage('sdcx')" class="flipper">
+	 <div class="front "><img src="images/sdcx2.png"/></div>
+	 </a>
+	 </li>
+	 <li class="flip-container " ontouchstart="this.classList.toggle('hover');">
+	 <a href="#" onclick="gotoPage('smcx')" class="flipper">
+	 <div class="front "><img src="images/smcx2.png"/></div>
+	 </a>
+	 </li>
+	 <li class="flip-container " ontouchstart="this.classList.toggle('hover');">
+	 <a href="#" onclick="gotoPage('bdcx')" class="flipper">
+	 <div class="front "><img src="images/bdcx2.png"/></div>
+	 </a>
+	 </li>
+	 --> 
+	 </ul>
  </div>
- <div style="z-index: -2; margin-left: 850px;margin-top: 300px;">
+ </div>
+ <div id="nextArrow" onclick="nextDiv()" style="float:right; position:absolute; margin-left:940px; padding-top:160px;  width:40px;height:300px;"><img src="images/nextDiv.png"></div>
+ 
+ <div style="z-index: 99; position:absolute; margin-left: 850px;margin-top: 400px;">
 <img onclick="quit();" src="images/quit.png" alt="退出" />
 </div>
 </body>
